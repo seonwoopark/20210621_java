@@ -1,64 +1,56 @@
 // 입력값
 import java.util.Scanner;
 public class 달력만들기프로그램 {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//입력값 받기
-		Scanner scan = new Scanner(System.in);
-		
-		System.out.print("년도 입력 : ");
-		int year = scan.nextInt();
-		
-		System.out.print("월 입력 : ");
-		int month = scan.nextInt();
-		
-		
-		System.out.printf("%d년도 %d월 \n",year, month);
+	static int year, month;
+	static int[] lastDay= {0,31,28,31,30,31,30,31,31,30,31,30,31};
+	
+	static void input() {
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Year : ");
+		year = sc.nextInt();
+		while(true) {
+			System.out.print("Month(1~12) : ");
+			month = sc.nextInt();
+			if(month<1||month>12)
+				System.out.println("잘못된 달 입력입니다.");
+			else break;
+		}
+	}
+	
+	static int week() {
+		if(year%4==0 && year%100==0 || year%400==0)	lastDay[2]=29;
+		else lastDay[2]=28;
+		int total=(year-1)*365+(year-1)/4-(year-1)/100+(year-1)/400+1;
+		for(int i=1;i<month;i++)
+			total+=lastDay[i];
+		return total%7;
+	}
+	
+	static void printCalendar(int week) {
+		System.out.printf("%d년도 %d월\n",year,month);
 		String[] strWeek= {"일","월","화","수","목","금","토"};
 		for(int i=0;i<strWeek.length;i++)
-		{
 			System.out.print(strWeek[i]+"\t");
-		}
-		System.out.println();
+		System.out.println("\n");
 		
-		int total = (year-1)*365 + (year-1)/4
-				                 - (year-1)/100
-				                 +(year-1)/400;
-		int[] lastday= {31,28,31,30,31,30,
-				31,31,30,31,30,31};
-
-		if((year%4==0 && year%100!=0)||(year%400==0)) //윤년 조건(ERP)
-			lastday[1]=29;
-		else
-			lastday[1]=28;
-		
-		for(int i=0; i<month-1;i++)
-		{
-			total+=lastday[i];
-		}
-		total+= 1;
-		
-		int week =total%7;
-		
-		for(int i=1; i<lastday[month-1];i++)
-		{
+		for(int i=1;i<=lastDay[month];i++) {
 			if(i==1)
-			{
-				for(int j=0;j<week;j++) {
+				for(int j=0;j<week;j++)
 					System.out.print("\t");
-				}
-			}
 			System.out.printf("%2d\t",i);
-			week++;
-			if(week>6)
-			{
-				week=0;
-				System.out.println();
-			}
+			week=(week+1)%7;
+			if(week==0)	System.out.println();
 		}
-		
-		
 	}
+	
+	static void calendar() {
+		input();
+		printCalendar(week());
+	}
+	
+	public static void main(String[] args) {
+		calendar();
+	}
+
 
 }
